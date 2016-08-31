@@ -28,6 +28,9 @@ ext {
     rxandroidVersion = '1.2.1'
     espressoVersion = '2.2.2'
     junitVersion = '4.12'
+    butterknifeVersion = '8.3.0'
+    picassoVersion = '2.5.2'
+    fastadapterVersion = '1.7.0'
 }
 
 task clean(type: Delete) {

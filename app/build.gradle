@@ -32,14 +32,14 @@ dependencies {
 
     compile "io.reactivex:rxandroid:${rxandroidVersion}"
 
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile "com.squareup.picasso:picasso:${picassoVersion}"
 
-    compile('com.mikepenz:fastadapter:1.7.0@aar') {
+    compile("com.mikepenz:fastadapter:${fastadapterVersion}@aar") {
         transitive = true
     }
 
-    compile 'com.jakewharton:butterknife:8.3.0'
-    apt 'com.jakewharton:butterknife-compiler:8.3.0'
+    compile "com.jakewharton:butterknife:${butterknifeVersion}"
+    apt "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
 
     androidTestCompile("com.android.support.test.espresso:espresso-core:${espressoVersion}", {
         exclude group: 'com.android.support', module: 'support-annotations'
