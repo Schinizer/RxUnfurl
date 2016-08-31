@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.editText)
     EditText editText;
 
-    FastItemAdapter<UrlPreviewItem> fastAdapter = new FastItemAdapter();
+    FastItemAdapter<UrlPreviewItem> fastAdapter = new FastItemAdapter<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +47,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.fab)
-    void GeneratePreview()
-    {
-        fastAdapter.add(0, new UrlPreviewItem(editText.getText().toString()));
+    void GeneratePreview() {
+        UrlPreviewItem item = new UrlPreviewItem(editText.getText().toString());
+        UrlPreviewItemPresenter presenter = new UrlPreviewItemPresenter();
+        presenter.setView(item);
+        item.setPresenter(presenter);
+
+        fastAdapter.add(0, item);
         recyclerView.scrollToPosition(0);
         editText.setText("");
     }
