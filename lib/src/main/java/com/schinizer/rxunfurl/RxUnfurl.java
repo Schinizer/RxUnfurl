@@ -5,6 +5,7 @@ import com.schinizer.rxunfurl.model.ImageInfo;
 import com.schinizer.rxunfurl.model.PreviewData;
 
 import org.jsoup.Jsoup;
+import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -102,15 +103,15 @@ public class RxUnfurl {
                             }
 
                             // Fallback to <title>
-                            if (previewData.getTitle().isEmpty()) {
+                            if (StringUtil.isBlank(previewData.getTitle())) {
                                 previewData.setTitle(document.title());
                             }
                             // Fallback to param listed url
-                            if (previewData.getUrl().isEmpty()) {
+                            if (StringUtil.isBlank(previewData.getUrl())) {
                                 previewData.setUrl(url);
                             }
                             // Fallback to meta description
-                            if (previewData.getDescription().isEmpty()) {
+                            if (StringUtil.isBlank(previewData.getDescription())) {
                                 for (Element property : document.select("meta[name]")) {
                                     switch (property.attr("name")) {
                                         case "description":
@@ -120,9 +121,9 @@ public class RxUnfurl {
                                 }
                             }
                             // Fallback to first <p> with text
-                            if (previewData.getDescription().isEmpty()) {
+                            if (StringUtil.isBlank(previewData.getDescription())) {
                                 for (Element p : document.select("p")) {
-                                    if (!p.text().isEmpty()) {
+                                    if (!p.text().equals("")) {
                                         previewData.setDescription(p.text());
                                         break;
                                     }
