@@ -33,6 +33,9 @@ public class RxUnfurl {
     private static volatile OkHttpClient internalClient;
 
     public static void setInternalClient(OkHttpClient client) {
+        if(client == null)
+            return;
+
         if (internalClient == null) {
             synchronized (RxUnfurl.class) {
                 if (internalClient == null) {
@@ -97,7 +100,7 @@ public class RxUnfurl {
                                         previewData.setDescription(property.attr("content"));
                                         break;
                                     case "og:image":
-                                        extractedURLs.add(property.attr("content"));
+                                        extractedURLs.add(property.attr("abs:content"));
                                         break;
                                 }
                             }
@@ -112,11 +115,12 @@ public class RxUnfurl {
                             }
                             // Fallback to meta description
                             if (StringUtil.isBlank(previewData.getDescription())) {
-                                for (Element property : document.select("meta[name]")) {
-                                    switch (property.attr("name")) {
-                                        case "description":
-                                            previewData.setDescription(property.attr("content"));
-                                            break;
+                                for (Element property : document.select("meta[name=description]")) {
+                                    String content = property.attr("content");
+
+                                    if(!StringUtil.isBlank(content)) {
+                                        previewData.setDescription(content);
+                                        break;
                                     }
                                 }
                             }
