@@ -18,6 +18,13 @@ class UrlPreviewItemPresenter implements UrlPreviewContract.Presenter {
     private UrlPreviewContract.View view;
     private PreviewData data = null;
 
+    UrlPreviewItemPresenter() {}
+
+    UrlPreviewItemPresenter(PreviewData data)
+    {
+        this.data = data;
+    }
+
     @Override
     public void setView(UrlPreviewContract.View view) {
         this.view = view;
