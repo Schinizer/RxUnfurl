@@ -5,9 +5,9 @@ import com.schinizer.rxunfurl.model.PreviewData;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class UrlPreviewItemPresenterTest {
 
@@ -16,7 +16,7 @@ public class UrlPreviewItemPresenterTest {
 
     @Test
     public void populateViewTest() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        initMocks(this);
 
         UrlPreviewItemPresenter presenter = new UrlPreviewItemPresenter(new PreviewData());
         presenter.setView(view);
