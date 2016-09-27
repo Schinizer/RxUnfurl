@@ -1,0 +1,10 @@
+language: android
+jdk: oraclejdk8
+
+script: ./gradlew test
+
+deploy:
+  provider: script
+  script: ./gradlew bintrayUpload
+  on:
+    tags: true
