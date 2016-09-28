@@ -1,12 +1,12 @@
 plugins {
-    id "com.jfrog.bintray" version "1.7"
+    id "com.jfrog.bintray" version "1.7.1"
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
 
-group = 'com.github.Schinizer'
-version = 'v0.1.0'
+group = 'com.schinizer'
+version = rxunfurlVersion
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
@@ -73,7 +73,7 @@ install {
 
 bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
+    key = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : System.getenv('BINTRAY_KEY')
     configurations = ['archives']
     publish = true
 
@@ -81,16 +81,19 @@ bintray {
         repo = 'maven'
         name = 'RxUnfurl'
         userOrg = user
+        desc = 'A reactive extension to generate URL previews.'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/Schinizer/RxUnfurl.git'
         websiteUrl = 'https://github.com/Schinizer/RxUnfurl/'
         issueTrackerUrl = 'https://github.com/Schinizer/RxUnfurl/issues'
 
+        githubRepo = 'Schinizer/RxUnfurl'
+        githubReleaseNotesFile = 'README.md'
+
         version {
-            name = 'v0.1.0'
-            desc = 'RxUnfurl v0.1.0'
+            name = rxunfurlVersion
             released  = new Date()
-            vcsTag = 'v0.1.0'
+            vcsTag = rxunfurlVersion
         }
     }
 }
