@@ -6,6 +6,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 group = 'com.github.Schinizer'
+version = 'v0.1.0'
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
@@ -74,6 +75,7 @@ bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
     configurations = ['archives']
+    publish = true
 
     pkg {
         repo = 'maven'
