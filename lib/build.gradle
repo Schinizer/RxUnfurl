@@ -1,6 +1,9 @@
+plugins {
+    id "com.jfrog.bintray" version "1.7"
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'com.jfrog.bintray'
 
 group = 'com.github.Schinizer'
 
@@ -38,37 +41,54 @@ artifacts {
     archives javadocJar
 }
 
-// To specify a license in the pom:
 install {
-    repositories.mavenInstaller {
-        pom.project {
-            licenses {
-                license {
-                    name 'The Apache Software License, Version 2.0'
-                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    distribution 'repo'
-                }
+    repositories.mavenInstaller.pom.project {
+        name 'RxUnfurl'
+        description 'RxUnfurl'
+        url 'https://github.com/Schinizer/RxUnfurl'
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+
+        scm {
+            url 'https://github.com/Schinizer/RxUnfurl'
+            connection 'scm:git:https://github.com/Schinizer/RxUnfurl'
+            developerConnection 'scm:git:https://github.com/Schinizer/RxUnfurl'
+        }
+
+        developers {
+            developer {
+                id 'schinizer'
+                name 'Schinizer'
             }
         }
     }
 }
 
 bintray {
-    user = System.getenv('BINTRAY_USER')
-    key = System.getenv('BINTRAY_KEY')
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_KEY')
     configurations = ['archives']
 
     pkg {
-        repo = 'generic'
+        repo = 'maven'
         name = 'RxUnfurl'
+        userOrg = user
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/Schinizer/RxUnfurl.git'
-    }
+        websiteUrl = 'https://github.com/Schinizer/RxUnfurl/'
+        issueTrackerUrl = 'https://github.com/Schinizer/RxUnfurl/issues'
 
-    version {
-        name = 'v0.1.0'
-        desc = 'RxUnfurl v0.1.0'
-        released  = new Date()
-        vcsTag = 'v0.1.0'
+        version {
+            name = 'v0.1.0'
+            desc = 'RxUnfurl v0.1.0'
+            released  = new Date()
+            vcsTag = 'v0.1.0'
+        }
     }
 }
