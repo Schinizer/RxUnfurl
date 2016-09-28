@@ -12,6 +12,10 @@ before_script:
 
 script: ./gradlew build
 
+cache:
+  directories:
+  - $HOME/.gradle
+
 deploy:
   provider: script
   script: ./gradlew bintrayUpload
