@@ -12,7 +12,7 @@ Image dimensions are read from its uri by fetching the required bytes and then s
 
 ## Gradle dependency
 To use the library, add the following dependency to your `build.gradle`
-```
+```groovy
 dependencies {
 	compile 'com.schinizer.RxUnfurl:0.0.1'
 }
@@ -22,7 +22,7 @@ dependencies {
 To generate previews, simply subscribe to `RxUnfurl.generatePreview(yourURL)`.
 
 If you are on android, you will need `RxAndroid` to subscribe to network calls on another thread.
-```
+```Java
 RxUnfurl.generatePreview(yourURL)
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
@@ -39,7 +39,7 @@ RxUnfurl.generatePreview(yourURL)
     });
 ```
 This library uses okhttp for network calls. If you will like to supply your instance, call:
-```
+```Java
 RxUnfurl.setInternalClient(yourOKhttpClient);
 ```
 
