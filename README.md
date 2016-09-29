@@ -1,7 +1,8 @@
 # RxUnfurl
 
-<img src='https://giant.gfycat.com/WearyNecessaryFattaileddunnart.gif' height="512" align="right" hspace="20"/>
+<img src='https://giant.gfycat.com/WearyNecessaryFattaileddunnart.gif' height="400" align="right" hspace="20"/>
 
+[![Download](https://api.bintray.com/packages/schinizer/maven/RxUnfurl/images/download.svg) ](https://bintray.com/schinizer/maven/RxUnfurl/_latestVersion)
 [![Build Status](https://travis-ci.org/Schinizer/RxUnfurl.svg?branch=develop)](https://travis-ci.org/Schinizer/RxUnfurl)
 
 A reactive extension to generate URL previews.
@@ -14,7 +15,7 @@ Image dimensions are read from its uri by fetching the required bytes and then s
 To use the library, add the following dependency to your `build.gradle`
 ```groovy
 dependencies {
-	compile 'com.schinizer.RxUnfurl:0.0.1'
+	compile 'com.schinizer:RxUnfurl:0.1.0'
 }
 ```
 
