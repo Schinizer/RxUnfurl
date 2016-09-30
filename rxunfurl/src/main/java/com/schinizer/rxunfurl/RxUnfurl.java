@@ -194,7 +194,7 @@ public class RxUnfurl {
                 .build();
         try {
             response = client.newCall(request).execute();
-            switch (response.header("Content-Type")) {
+            switch (response.body().contentType().toString()) {
                 case "image/jpeg":
                     return Observable.just(new ImageInfo(url, decodeJpegDimension(response.body().byteStream())));
                 case "image/png":
