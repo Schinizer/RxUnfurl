@@ -15,7 +15,7 @@ Image dimensions are read from its uri by fetching the required bytes and then s
 To use the library, add the following dependency to your `build.gradle`
 ```groovy
 dependencies {
-	compile 'com.schinizer:rxunfurl:0.1.0'
+	compile 'com.schinizer:rxunfurl:0.1.1'
 }
 ```
 
