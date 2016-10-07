@@ -45,7 +45,7 @@ RxUnfurl.setInternalClient(yourOKhttpClient);
 ```
 
 ## Sample App
-You may find a sample android implementation in `/app`.
+You may find a sample android implementation in `/sample`.
 
 # License
 ```
