@@ -54,9 +54,10 @@ public class RxUnfurl {
             }
         }
 
-      if (!url.contains("http://www")) {
-        url = "http://www." + url;
+      if (!url.contains("http://") && !url.contains("https://")) {
+        url = "http://" + url;
       }
+
 
         return Observable.just(url)
                 .flatMap(new Func1<String, Observable<PreviewData>>() {
