@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.2.2'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
@@ -40,9 +40,11 @@ dependencies {
     compile "com.android.support:cardview-v7:${supportLibVersion}"
     compile "com.android.support:percent:${supportLibVersion}"
 
-    compile "io.reactivex:rxandroid:${rxandroidVersion}"
+    compile "io.reactivex:rxandroid:${rxjavaVersion}"
 
     compile "com.squareup.picasso:picasso:${picassoVersion}"
+
+    compile 'com.facebook.stetho:stetho-okhttp3:1.4.1'
 
     compile("com.mikepenz:fastadapter:${fastadapterVersion}@aar") {
         transitive = true

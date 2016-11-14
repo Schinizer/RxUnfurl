@@ -17,8 +17,11 @@ class UrlPreviewItemPresenter implements UrlPreviewContract.Presenter {
 
     private UrlPreviewContract.View view;
     private PreviewData data = null;
+    private RxUnfurl rxUnfurl;
 
-    UrlPreviewItemPresenter() {}
+    UrlPreviewItemPresenter(RxUnfurl rxUnfurl) {
+        this.rxUnfurl = rxUnfurl;
+    }
 
     UrlPreviewItemPresenter(PreviewData data)
     {
@@ -33,7 +36,7 @@ class UrlPreviewItemPresenter implements UrlPreviewContract.Presenter {
     @Override
     public void GeneratePreview(String url) {
         if (data == null) {
-            RxUnfurl.generatePreview(url)
+            rxUnfurl.generatePreview(url)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<PreviewData>() {

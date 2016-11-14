@@ -17,6 +17,7 @@ import okio.Buffer;
 import okio.Okio;
 import rx.Observable;
 import rx.observers.TestSubscriber;
+import rx.schedulers.Schedulers;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 public class RxUnfurlTest {
     @Rule public final MockWebServer server = new MockWebServer();
+    private RxUnfurl rxUnfurl = new RxUnfurl.Builder().scheduler(Schedulers.immediate()).build();
 
     @Test
     public void testExtractOpenGraphTags()
@@ -50,7 +52,7 @@ public class RxUnfurlTest {
             }
         });
 
-        Observable<PreviewData> observable = RxUnfurl.generatePreview(server.url("/").toString());
+        Observable<PreviewData> observable = rxUnfurl.generatePreview(server.url("/").toString());
         TestSubscriber<PreviewData> testSubscriber = new TestSubscriber<>();
 
         observable.subscribe(testSubscriber);
@@ -90,7 +92,7 @@ public class RxUnfurlTest {
             }
         });
 
-        Observable<PreviewData> observable = RxUnfurl.generatePreview(server.url("/").toString());
+        Observable<PreviewData> observable = rxUnfurl.generatePreview(server.url("/").toString());
         TestSubscriber<PreviewData> testSubscriber = new TestSubscriber<>();
 
         observable.subscribe(testSubscriber);
@@ -119,7 +121,7 @@ public class RxUnfurlTest {
             .addHeader("content-type: text/html")
             .addHeader("content-length", mockHtml.length()));
 
-        Observable<PreviewData> observable = RxUnfurl.generatePreview(server.url("/").toString());
+        Observable<PreviewData> observable = rxUnfurl.generatePreview(server.url("/").toString());
         TestSubscriber<PreviewData> testSubscriber = new TestSubscriber<>();
 
         observable.subscribe(testSubscriber);
@@ -128,71 +130,6 @@ public class RxUnfurlTest {
 
         PreviewData data = testSubscriber.getOnNextEvents().get(0);
         assertEquals(data.getDescription(), "fallback description");
-    }
-
-    @Test
-    public void testFileFormatExtractDimensions()
-    {
-        final String mockHtml = "<!DOCTYPE html><html><body><img src=\"64x64_baseline.jpg\"/> <img src=\"32x32_progressive.jpg\"/> <img src=\"16x16.png\"/> <img src=\"8x8.gif\"/> <img src=\"4x4.bmp\"/></body></html>";
-
-        server.setDispatcher(new Dispatcher() {
-            @Override
-            public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
-                switch (request.getPath())
-                {
-                    case "/64x64_baseline.jpg":
-                        URL baseline = RxUnfurlTest.class.getClassLoader().getResource("64x64_baseline.jpg");
-                        return fileResponse((baseline == null) ? "" : baseline.getPath());
-                    case "/32x32_progressive.jpg":
-                        URL progressive = RxUnfurlTest.class.getClassLoader().getResource("32x32_progressive.jpg");
-                        return fileResponse((progressive == null) ? "" : progressive.getPath());
-                    case "/16x16.png":
-                        URL png = RxUnfurlTest.class.getClassLoader().getResource("16x16.png");
-                        return fileResponse((png == null) ? "" : png.getPath());
-                    case "/8x8.gif":
-                        URL gif = RxUnfurlTest.class.getClassLoader().getResource("8x8.gif");
-                        return fileResponse((gif == null) ? "" : gif.getPath());
-                    case "/4x4.bmp":
-                        URL bmp = RxUnfurlTest.class.getClassLoader().getResource("4x4.bmp");
-                        return fileResponse((bmp == null) ? "" : bmp.getPath());
-                    default:
-                        return new MockResponse()
-                                .setStatus("HTTP/1.1 200")
-                                .setBody(mockHtml)
-                                .addHeader("content-type: text/html")
-                                .addHeader("content-length", mockHtml.length());
-                }
-            }
-        });
-
-        Observable<PreviewData> observable = RxUnfurl.generatePreview(server.url("/").toString());
-        TestSubscriber<PreviewData> testSubscriber = new TestSubscriber<>();
-
-        observable.subscribe(testSubscriber);
-        testSubscriber.assertNoErrors();
-        testSubscriber.assertValueCount(1);
-
-        PreviewData data = testSubscriber.getOnNextEvents().get(0);
-
-        assertEquals(data.getImages().size(), 5);
-
-        // Images are sorted to total pixel counts
-        // Test all supported image format
-        assertEquals(data.getImages().get(0).getSource(), server.url("/").toString() + "64x64_baseline.jpg");
-        assertEquals(data.getImages().get(0).getDimension().getWidth(), 64);
-        assertEquals(data.getImages().get(0).getDimension().getHeight(), 64);
-        assertEquals(data.getImages().get(1).getSource(), server.url("/").toString() + "32x32_progressive.jpg");
-        assertEquals(data.getImages().get(1).getDimension().getWidth(), 32);
-        assertEquals(data.getImages().get(1).getDimension().getHeight(), 32);
-        assertEquals(data.getImages().get(2).getSource(), server.url("/").toString() + "16x16.png");
-        assertEquals(data.getImages().get(2).getDimension().getWidth(), 16);
-        assertEquals(data.getImages().get(2).getDimension().getHeight(), 16);
-        assertEquals(data.getImages().get(3).getSource(), server.url("/").toString() + "8x8.gif");
-        assertEquals(data.getImages().get(3).getDimension().getWidth(), 8);
-        assertEquals(data.getImages().get(3).getDimension().getHeight(), 8);
-        assertEquals(data.getImages().get(4).getSource(), server.url("/").toString() + "4x4.bmp");
-        assertEquals(data.getImages().get(4).getDimension().getWidth(), 4);
-        assertEquals(data.getImages().get(4).getDimension().getHeight(), 4);
     }
 
     private String contentType(String path) {
