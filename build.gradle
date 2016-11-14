@@ -11,7 +11,7 @@ subprojects {
 }
 
 ext {
-    rxunfurlVersion = '0.1.2'
+    rxunfurlVersion = '0.2.0'
 
     supportLibVersion = '24.2.1'
     okhttpVersion = '3.4.2'
