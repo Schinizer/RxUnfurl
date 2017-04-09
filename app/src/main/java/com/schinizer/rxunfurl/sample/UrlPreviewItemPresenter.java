@@ -5,9 +5,9 @@ import android.util.Log;
 import com.schinizer.rxunfurl.RxUnfurl;
 import com.schinizer.rxunfurl.model.PreviewData;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by tinkerbox on 31/8/16.
@@ -23,8 +23,7 @@ class UrlPreviewItemPresenter implements UrlPreviewContract.Presenter {
         this.rxUnfurl = rxUnfurl;
     }
 
-    UrlPreviewItemPresenter(PreviewData data)
-    {
+    UrlPreviewItemPresenter(PreviewData data) {
         this.data = data;
     }
 
@@ -39,16 +38,16 @@ class UrlPreviewItemPresenter implements UrlPreviewContract.Presenter {
             rxUnfurl.generatePreview(url)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<PreviewData>() {
+                    .subscribe(new Consumer<PreviewData>() {
                         @Override
-                        public void call(PreviewData previewData) {
+                        public void accept(PreviewData previewData) {
                             data = previewData;
                             view.populateView(data);
                             Log.d("RxUnfurl", data.toString());
                         }
-                    }, new Action1<Throwable>() {
+                    }, new Consumer<Throwable>() {
                         @Override
-                        public void call(Throwable throwable) {
+                        public void accept(Throwable throwable) {
                             Log.d("RxUnfurl", throwable.toString());
                         }
                     });

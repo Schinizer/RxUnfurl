@@ -12,16 +12,19 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Scheduler;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import rx.Observable;
-import rx.Scheduler;
-import rx.functions.Func1;
-import rx.functions.Func2;
-import rx.schedulers.Schedulers;
 
 public class RxUnfurl {
 
@@ -29,8 +32,7 @@ public class RxUnfurl {
     private Scheduler scheduler;
     private ImageDecoder decoder = new ImageDecoder();
 
-    private RxUnfurl(OkHttpClient client, Scheduler scheduler)
-    {
+    private RxUnfurl(OkHttpClient client, Scheduler scheduler) {
         this.client = client;
         this.scheduler = scheduler;
     }
@@ -41,9 +43,9 @@ public class RxUnfurl {
 
     private Observable<PreviewData> extractData(String url) {
         return Observable.just(url)
-                .flatMap(new Func1<String, Observable<AbstractMap.SimpleEntry<PreviewData, List<String>>>>() {
+                .flatMap(new Function<String, ObservableSource<AbstractMap.SimpleEntry<PreviewData, List<String>>>>() {
                     @Override
-                    public Observable<AbstractMap.SimpleEntry<PreviewData, List<String>>> call(String url) {
+                    public ObservableSource<AbstractMap.SimpleEntry<PreviewData, List<String>>> apply(@NonNull String url) throws Exception {
                         Request request = new Request.Builder()
                                 .url(url)
                                 .build();
@@ -98,7 +100,7 @@ public class RxUnfurl {
                                                 for (Element property : document.select("meta[name=description]")) {
                                                     String content = property.attr("content");
 
-                                                    if(!StringUtil.isBlank(content)) {
+                                                    if (!StringUtil.isBlank(content)) {
                                                         previewData.setDescription(content);
                                                         break;
                                                     }
@@ -142,15 +144,15 @@ public class RxUnfurl {
                         }
                     }
                 })
-                .flatMap(new Func1<AbstractMap.SimpleEntry<PreviewData, List<String>>, Observable<PreviewData>>() {
+                .flatMap(new Function<AbstractMap.SimpleEntry<PreviewData, List<String>>, ObservableSource<PreviewData>>() {
                     @Override
-                    public Observable<PreviewData> call(AbstractMap.SimpleEntry<PreviewData, List<String>> pair) {
+                    public ObservableSource<PreviewData> apply(@NonNull AbstractMap.SimpleEntry<PreviewData, List<String>> pair) throws Exception {
                         Observable<PreviewData> meta = Observable.just(pair.getKey());
                         Observable<List<ImageInfo>> imgInfo = processImageDimension(pair.getValue());
 
-                        return Observable.zip(meta, imgInfo, new Func2<PreviewData, List<ImageInfo>, PreviewData>() {
+                        return Observable.zip(meta, imgInfo, new BiFunction<PreviewData, List<ImageInfo>, PreviewData>() {
                             @Override
-                            public PreviewData call(PreviewData previewData, List<ImageInfo> images) {
+                            public PreviewData apply(@NonNull PreviewData previewData, @NonNull List<ImageInfo> images) throws Exception {
                                 previewData.setImages(images);
                                 return previewData;
                             }
@@ -159,36 +161,36 @@ public class RxUnfurl {
                 });
     }
 
-    private Observable<List<ImageInfo>> processImageDimension(List<String> urls)
-    {
-        return Observable.from(urls)
+    private Observable<List<ImageInfo>> processImageDimension(List<String> urls) {
+        return Observable.fromIterable(urls)
                 // Only query distinct urls
                 .distinct()
                 // Parse image only for their size
-                .concatMapEager(new Func1<String, Observable<ImageInfo>>() {
+                .concatMapEager(new Function<String, Observable<ImageInfo>>() {
                     @Override
-                    public Observable<ImageInfo> call(String url) {
+                    public Observable<ImageInfo> apply(@NonNull String url) {
                         return extractImageDimension(url);
                     }
                 })
                 // Sort the results according to resolution
-                .toSortedList(new Func2<ImageInfo, ImageInfo, Integer>() {
+                .toSortedList(new Comparator<ImageInfo>() {
                     @Override
-                    public Integer call(ImageInfo lhs, ImageInfo rhs) {
+                    public int compare(ImageInfo lhs, ImageInfo rhs) {
                         Integer lhsRes = lhs.getDimension().getWidth() * lhs.getDimension().getHeight();
                         Integer rhsRes = rhs.getDimension().getWidth() * rhs.getDimension().getHeight();
 
                         return rhsRes.compareTo(lhsRes);
                     }
                 })
+                .toObservable()
                 .subscribeOn(scheduler);
     }
 
     private Observable<ImageInfo> extractImageDimension(String url) {
         return Observable.just(url)
-                .flatMap(new Func1<String, Observable<ImageInfo>>() {
+                .flatMap(new Function<String, ObservableSource<ImageInfo>>() {
                     @Override
-                    public Observable<ImageInfo> call(String url) {
+                    public ObservableSource<ImageInfo> apply(@NonNull String url) throws Exception {
                         Response response = null;
                         Request request = new Request.Builder()
                                 .url(url)
@@ -207,14 +209,13 @@ public class RxUnfurl {
                                 default:
                                     return Observable.empty();
                             }
-                        }
-                        catch (IOException e) {
+                        } catch (IOException e) {
                             return Observable.empty();
-                        }
-                        finally {
+                        } finally {
                             if (response != null) response.body().close();
                         }
                     }
+
                 })
                 .subscribeOn(scheduler);
     }
@@ -223,28 +224,23 @@ public class RxUnfurl {
         private OkHttpClient client;
         private Scheduler scheduler;
 
-        public Builder client(OkHttpClient client)
-        {
+        public Builder client(OkHttpClient client) {
             this.client = client;
             return this;
         }
 
-        public Builder scheduler(Scheduler scheduler)
-        {
+        public Builder scheduler(Scheduler scheduler) {
             this.scheduler = scheduler;
             return this;
         }
 
-        public RxUnfurl build()
-        {
-            if(client == null)
-            {
+        public RxUnfurl build() {
+            if (client == null) {
                 client = new OkHttpClient();
             }
 
-            if(scheduler == null)
-            {
-                scheduler = Schedulers.immediate();
+            if (scheduler == null) {
+                scheduler = Schedulers.trampoline();
             }
 
             return new RxUnfurl(client, scheduler);

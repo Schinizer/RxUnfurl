@@ -16,7 +16,7 @@ sourceSets.test {
 }
 
 dependencies {
-    compile "io.reactivex:rxjava:${rxjavaVersion}"
+    compile "io.reactivex.rxjava2:rxjava:${rxjavaVersion}"
 
     compile "com.squareup.okhttp3:okhttp:${okhttpVersion}"
     compile "com.squareup.okio:okio:${okioVersion}"

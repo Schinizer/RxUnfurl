@@ -18,7 +18,7 @@ import com.schinizer.rxunfurl.RxUnfurl;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.schedulers.Schedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
