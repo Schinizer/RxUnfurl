@@ -21,6 +21,7 @@ dependencies {
 
 ## RxJava 2 notice
 `RxUnfurl.generatePreview()` is now a `Single` instead of an `Observable`
+
 RxJava 1 is dropped entirely and no longer supported.
 
 ## Usage
@@ -32,8 +33,8 @@ OkHttpClient okhttpClient = new OkHttpClient();
 
 RxUnfurl inst = new RxUnfurl.Builder()
 		.client(okhttpClient) // You can supply your okhttp client here
-        .scheduler(Schedulers.io())
-        .build();
+		.scheduler(Schedulers.io())
+		.build();
 		
 inst.generatePreview("http://9gag.com")
     .observeOn(AndroidSchedulers.mainThread())
