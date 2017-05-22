@@ -1,12 +1,10 @@
 buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.2'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 25
@@ -51,7 +49,7 @@ dependencies {
     }
 
     compile "com.jakewharton:butterknife:${butterknifeVersion}"
-    apt "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
 
     androidTestCompile("com.android.support.test.espresso:espresso-core:${espressoVersion}", {
         exclude group: 'com.android.support', module: 'support-annotations'
