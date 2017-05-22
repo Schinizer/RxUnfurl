@@ -6,11 +6,10 @@ import com.schinizer.rxunfurl.RxUnfurl;
 import com.schinizer.rxunfurl.model.PreviewData;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.observers.DisposableSingleObserver;
 
 /**
- * Created by tinkerbox on 31/8/16.
+ * Created by Schinizer on 31/8/16.
  */
 
 class UrlPreviewItemPresenter implements UrlPreviewContract.Presenter {
@@ -36,19 +35,18 @@ class UrlPreviewItemPresenter implements UrlPreviewContract.Presenter {
     public void GeneratePreview(String url) {
         if (data == null) {
             rxUnfurl.generatePreview(url)
-                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<PreviewData>() {
+                    .subscribeWith(new DisposableSingleObserver<PreviewData>() {
                         @Override
-                        public void accept(PreviewData previewData) {
+                        public void onSuccess(PreviewData previewData) {
                             data = previewData;
                             view.populateView(data);
                             Log.d("RxUnfurl", data.toString());
                         }
-                    }, new Consumer<Throwable>() {
+
                         @Override
-                        public void accept(Throwable throwable) {
-                            Log.d("RxUnfurl", throwable.toString());
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
                         }
                     });
         } else {

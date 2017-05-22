@@ -15,9 +15,13 @@ Image dimensions are read from its uri by fetching the required bytes and then s
 To use the library, add the following dependency to your `build.gradle`
 ```groovy
 dependencies {
-	compile 'com.schinizer:rxunfurl:0.2.0'
+	compile 'com.schinizer:rxunfurl:0.3.0'
 }
 ```
+
+## RxJava 2 notice
+`RxUnfurl.generatePreview()` is now a `Single` instead of an `Observable`
+RxJava 1 is dropped entirely and no longer supported.
 
 ## Usage
 To generate previews, simply subscribe to `RxUnfurl.generatePreview(yourURL)`.
@@ -28,21 +32,20 @@ OkHttpClient okhttpClient = new OkHttpClient();
 
 RxUnfurl inst = new RxUnfurl.Builder()
 		.client(okhttpClient) // You can supply your okhttp client here
-                .scheduler(Schedulers.io())
-                .build();
+        .scheduler(Schedulers.io())
+        .build();
 		
 inst.generatePreview("http://9gag.com")
-    .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
-    .subscribe(new Action1<PreviewData>() {
+    .subscribeWith(new DisposableSingleObserver<PreviewData>() {
         @Override
-        public void call(PreviewData previewData) {
-           
+        public void onSuccess(PreviewData previewData) { // Observable has been changed to Single
+
         }
-    }, new Action1<Throwable>() {
+
         @Override
-        public void call(Throwable throwable) {
-	
+        public void onError(Throwable e) {
+
         }
     });
 ```

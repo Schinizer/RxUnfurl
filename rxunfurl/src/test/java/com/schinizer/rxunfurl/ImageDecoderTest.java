@@ -8,10 +8,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 
+import okio.Okio;
+
 import static junit.framework.TestCase.assertEquals;
 
 /**
- * Created by DPSUser on 11/13/2016.
+ * Created by Schinizer on 11/13/2016.
  */
 
 public class ImageDecoderTest {
@@ -22,7 +24,7 @@ public class ImageDecoderTest {
     {
         URL baseline = ImageDecoderTest.class.getClassLoader().getResource("64x64_baseline.jpg");
         FileInputStream inputStream = new FileInputStream((baseline == null) ? "" : baseline.getPath());
-        Dimension dimension = decoder.decodeJpegDimension(inputStream);
+        Dimension dimension = decoder.decodeJpegDimension(Okio.buffer(Okio.source(inputStream)));
 
         assertEquals(dimension.getWidth(), 64);
         assertEquals(dimension.getHeight(), 64);
@@ -33,7 +35,7 @@ public class ImageDecoderTest {
     {
         URL progressive = ImageDecoderTest.class.getClassLoader().getResource("32x32_progressive.jpg");
         FileInputStream inputStream = new FileInputStream((progressive == null) ? "" : progressive.getPath());
-        Dimension dimension = decoder.decodeJpegDimension(inputStream);
+        Dimension dimension = decoder.decodeJpegDimension(Okio.buffer(Okio.source(inputStream)));
 
         assertEquals(dimension.getWidth(), 32);
         assertEquals(dimension.getHeight(), 32);
@@ -44,7 +46,7 @@ public class ImageDecoderTest {
     {
         URL png = ImageDecoderTest.class.getClassLoader().getResource("16x16.png");
         FileInputStream inputStream = new FileInputStream((png == null) ? "" : png.getPath());
-        Dimension dimension = decoder.decodePngDimension(inputStream);
+        Dimension dimension = decoder.decodePngDimension(Okio.buffer(Okio.source(inputStream)));
 
         assertEquals(dimension.getWidth(), 16);
         assertEquals(dimension.getHeight(), 16);
@@ -55,7 +57,7 @@ public class ImageDecoderTest {
     {
         URL gif = ImageDecoderTest.class.getClassLoader().getResource("8x8.gif");
         FileInputStream inputStream = new FileInputStream((gif == null) ? "" : gif.getPath());
-        Dimension dimension = decoder.decodeGifDimension(inputStream);
+        Dimension dimension = decoder.decodeGifDimension(Okio.buffer(Okio.source(inputStream)));
 
         assertEquals(dimension.getWidth(), 8);
         assertEquals(dimension.getHeight(), 8);
@@ -66,7 +68,7 @@ public class ImageDecoderTest {
     {
         URL bmp = ImageDecoderTest.class.getClassLoader().getResource("4x4.bmp");
         FileInputStream inputStream = new FileInputStream((bmp == null) ? "" : bmp.getPath());
-        Dimension dimension = decoder.decodeBmpDimension(inputStream);
+        Dimension dimension = decoder.decodeBmpDimension(Okio.buffer(Okio.source(inputStream)));
 
         assertEquals(dimension.getWidth(), 4);
         assertEquals(dimension.getHeight(), 4);

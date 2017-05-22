@@ -3,26 +3,23 @@ package com.schinizer.rxunfurl;
 import com.schinizer.rxunfurl.model.Dimension;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.InvalidPropertiesFormatException;
 
 import okio.BufferedSource;
 import okio.ByteString;
-import okio.Okio;
 
 /**
- * Created by DPSUser on 11/11/2016.
+ * Created by Schinizer on 11/11/2016.
  */
 
-public class ImageDecoder {
+class ImageDecoder {
 
     private static final ByteString JPEG_START_MARKER = ByteString.decodeHex("FF");
     private static final ByteString JPEG_BASELINE_MARKER = ByteString.decodeHex("C0");
     private static final ByteString JPEG_PROGRESSIVE_MARKER = ByteString.decodeHex("C2");
 
-    public Dimension decodeJpegDimension(InputStream in) throws IOException {
+    Dimension decodeJpegDimension(BufferedSource jpegSource) throws IOException {
         // Jpeg stores in big endian
-        BufferedSource jpegSource = Okio.buffer(Okio.source(in));
         Dimension dimension;
 
         while (true) {
@@ -51,10 +48,8 @@ public class ImageDecoder {
         return dimension;
     }
 
-    public Dimension decodePngDimension(InputStream in) throws IOException {
+    Dimension decodePngDimension(BufferedSource pngSource) throws IOException {
         // Png stores in big endian
-        BufferedSource pngSource = Okio.buffer(Okio.source(in));
-
         pngSource.skip(16);
         int w = pngSource.readInt();
         int h = pngSource.readInt();
@@ -62,10 +57,8 @@ public class ImageDecoder {
         return new Dimension(w, h);
     }
 
-    public Dimension decodeBmpDimension(InputStream in) throws IOException {
+    Dimension decodeBmpDimension(BufferedSource bmpSource) throws IOException {
         // Bmp stores in little endian
-        BufferedSource bmpSource = Okio.buffer(Okio.source(in));
-
         bmpSource.skip(18);
         int w = bmpSource.readIntLe();
         int h = bmpSource.readIntLe();
@@ -73,10 +66,8 @@ public class ImageDecoder {
         return new Dimension(w, h);
     }
 
-    public Dimension decodeGifDimension(InputStream in) throws IOException {
+    Dimension decodeGifDimension(BufferedSource gifSource) throws IOException {
         // Gif stores in little endian
-        BufferedSource gifSource = Okio.buffer(Okio.source(in));
-
         gifSource.skip(6);
         Short w = gifSource.readShortLe();
         Short h = gifSource.readShortLe();

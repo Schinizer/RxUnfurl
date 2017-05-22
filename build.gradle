@@ -11,18 +11,18 @@ subprojects {
 }
 
 ext {
-    rxunfurlVersion = '0.2.0'
+    rxunfurlVersion = '0.3.0'
 
     supportLibVersion = '25.3.1'
-    okhttpVersion = '3.4.2'
-    okioVersion = '1.11.0'
-    rxjavaVersion = '2.0.8'
+    okhttpVersion = '3.8.0'
+    okioVersion = '1.13.0'
+    rxjavaVersion = '2.1.0'
     rxandroidVersion = '2.0.1'
-    jsoupVersion = '1.10.1'
+    jsoupVersion = '1.10.2'
     espressoVersion = '2.2.2'
     junitVersion = '4.12'
     mockitoVersion = '2.2.15'
-    butterknifeVersion = '8.4.0'
+    butterknifeVersion = '8.5.1'
     picassoVersion = '2.5.2'
     fastadapterVersion = '1.7.0'
 }

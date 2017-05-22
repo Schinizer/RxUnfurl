@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
@@ -21,7 +20,7 @@ import okio.Buffer;
 import okio.Okio;
 
 /**
- * Created by DPSUser on 9/5/2016.
+ * Created by Schinizer on 9/5/2016.
  */
 
 public class RxUnfurlTest {
@@ -50,22 +49,23 @@ public class RxUnfurlTest {
             }
         });
 
-        Observable<PreviewData> observable = rxUnfurl.generatePreview(server.url("/").toString());
-        observable.test().assertNoErrors();
-        observable.test().assertValueCount(1);
-        observable.test().assertValue(new Predicate<PreviewData>() {
-            @Override
-            public boolean test(@NonNull PreviewData previewData) throws Exception {
-                return "http://someurl.io".equals(previewData.getUrl()) &&
-                        "title".equals(previewData.getTitle()) &&
-                        "description".equals(previewData.getDescription()) &&
-                        previewData.getImages().size() == 1 &&
-                        (server.url("/").toString() + "64x64_baseline.jpg")
-                                .equals(previewData.getImages().get(0).getSource()) &&
-                        previewData.getImages().get(0).getDimension().getHeight() == 64 &&
-                        previewData.getImages().get(0).getDimension().getWidth() == 64;
-            }
-        });
+        rxUnfurl.generatePreview(server.url("/").toString())
+                .test()
+                .assertNoErrors()
+                .assertValueCount(1)
+                .assertValue(new Predicate<PreviewData>() {
+                    @Override
+                    public boolean test(PreviewData previewData) throws Exception {
+                        return "http://someurl.io".equals(previewData.getUrl()) &&
+                                "title".equals(previewData.getTitle()) &&
+                                "description".equals(previewData.getDescription()) &&
+                                previewData.getImages().size() == 1 &&
+                                (server.url("/").toString() + "64x64_baseline.jpg")
+                                        .equals(previewData.getImages().get(0).getSource()) &&
+                                previewData.getImages().get(0).getDimension().getHeight() == 64 &&
+                                previewData.getImages().get(0).getDimension().getWidth() == 64;
+                    }
+                });
     }
 
     @Test
@@ -89,22 +89,23 @@ public class RxUnfurlTest {
             }
         });
 
-        Observable<PreviewData> observable = rxUnfurl.generatePreview(server.url("/").toString());
-        observable.test().assertNoErrors();
-        observable.test().assertValueCount(1);
-        observable.test().assertValue(new Predicate<PreviewData>() {
-            @Override
-            public boolean test(@NonNull PreviewData previewData) throws Exception {
-                return server.url("/").toString().equals(previewData.getUrl()) &&
-                        "fallback title".equals(previewData.getTitle()) &&
-                        "fallback description".equals(previewData.getDescription()) &&
-                        previewData.getImages().size() == 1 &&
-                        (server.url("/").toString() + "64x64_baseline.jpg")
-                                .equals(previewData.getImages().get(0).getSource()) &&
-                        previewData.getImages().get(0).getDimension().getHeight() == 64 &&
-                        previewData.getImages().get(0).getDimension().getWidth() == 64;
-            }
-        });
+        rxUnfurl.generatePreview(server.url("/").toString())
+                .test()
+                .assertNoErrors()
+                .assertValueCount(1)
+                .assertValue(new Predicate<PreviewData>() {
+                    @Override
+                    public boolean test(@NonNull PreviewData previewData) throws Exception {
+                        return server.url("/").toString().equals(previewData.getUrl()) &&
+                                "fallback title".equals(previewData.getTitle()) &&
+                                "fallback description".equals(previewData.getDescription()) &&
+                                previewData.getImages().size() == 1 &&
+                                (server.url("/").toString() + "64x64_baseline.jpg")
+                                        .equals(previewData.getImages().get(0).getSource()) &&
+                                previewData.getImages().get(0).getDimension().getHeight() == 64 &&
+                                previewData.getImages().get(0).getDimension().getWidth() == 64;
+                    }
+                });
     }
 
     @Test
@@ -122,15 +123,15 @@ public class RxUnfurlTest {
             }
         });
 
-        Observable<PreviewData> observable = rxUnfurl.generatePreview(server.url("/").toString());
-        observable.test().assertNoErrors();
-        observable.test().assertValueCount(1);
-        observable.test().assertValue(new Predicate<PreviewData>() {
-            @Override
-            public boolean test(@NonNull PreviewData previewData) throws Exception {
-                return previewData.getDescription().equals("fallback description");
-            }
-        });
+        rxUnfurl.generatePreview(server.url("/").toString())
+                .test().assertNoErrors()
+                .assertValueCount(1)
+                .assertValue(new Predicate<PreviewData>() {
+                    @Override
+                    public boolean test(@NonNull PreviewData previewData) throws Exception {
+                        return previewData.getDescription().equals("fallback description");
+                    }
+                });
     }
 
     private String contentType(String path) {

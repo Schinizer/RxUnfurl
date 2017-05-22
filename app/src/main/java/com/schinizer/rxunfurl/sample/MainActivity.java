@@ -10,6 +10,8 @@ import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.EditText;
 
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.mikepenz.fastadapter.FastAdapter;
 import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.adapters.FastItemAdapter;
@@ -19,6 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.OkHttpClient;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +40,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        Stetho.initializeWithDefaults(getApplicationContext());
+
         rxUnfurl = new RxUnfurl.Builder()
+                .client(new OkHttpClient().newBuilder()
+                        .addNetworkInterceptor(new StethoInterceptor())
+                        .build())
                 .scheduler(Schedulers.io())
                 .build();
 
@@ -56,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab)
     void GeneratePreview() {
+        if (editText.getText().toString().isEmpty()) return;
         UrlPreviewItem item = new UrlPreviewItem(URLUtil.guessUrl(editText.getText().toString()));
         UrlPreviewItemPresenter presenter = new UrlPreviewItemPresenter(rxUnfurl);
         presenter.setView(item);
